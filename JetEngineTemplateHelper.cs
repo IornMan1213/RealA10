@@ -1,9 +1,3 @@
-// Decompiled with JetBrains decompiler
-// Type: RealA10.JetEngineTemplateHelper
-// Assembly: RealA10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 532C87AC-4BC4-4B3D-ACF1-A050F52D51FF
-// Assembly location: C:\Program Files (x86)\Steam\steamapps\common\Nuclear Option\BepInEx\plugins\RealA10.dll
-
 using UnityEngine;
 
 #nullable disable
@@ -11,41 +5,63 @@ namespace RealA10;
 
 public static class JetEngineTemplateHelper
 {
+  /// <summary>
+  /// Locates a Turbojet/JetNozzle pair on a source plane's prefab to use as a template.
+  /// enginePath/nozzlePath default to the T/A-30's rig ("engine_R" / "nozzle_R" under it),
+  /// but can be overridden to pull a template engine from any other plane's prefab.
+  /// </summary>
   public static bool TryGetJetEngineTemplates(
     GameObject root,
     out Turbojet turbojetTemplate,
-    out JetNozzle nozzleTemplate)
+    out JetNozzle nozzleTemplate,
+    string enginePath = "engine_R",
+    string nozzlePath = "nozzle_R")
   {
-    turbojetTemplate = (Turbojet) null;
-    nozzleTemplate = (JetNozzle) null;
-    if ((root == null))
+    turbojetTemplate = null;
+    nozzleTemplate = null;
+
+    if (root == null)
     {
-      Debug.LogWarning((object) "[JetEngineTemplateHelper] Root is null.");
+      Debug.LogWarning("[JetEngineTemplateHelper] Root GameObject is null.");
       return false;
     }
-    Transform transform1 = root.transform.Find("engine_R");
-    if ((transform1 == null))
+
+    Debug.Log($"[JetEngineTemplateHelper] Looking for template engine at '{enginePath}' under '{root.name}'.");
+    Transform engineTransform = root.transform.Find(enginePath);
+    if (engineTransform == null)
     {
-      Debug.LogWarning((object) "[JetEngineTemplateHelper] engine_R not found.");
+      Debug.LogWarning($"[JetEngineTemplateHelper] Engine path not found: '{enginePath}' (searched under '{root.name}').");
       return false;
     }
-    turbojetTemplate = ((Component) transform1).GetComponent<Turbojet>();
-    if ((turbojetTemplate == null))
+    Debug.Log($"[JetEngineTemplateHelper] Found engine transform '{engineTransform.name}'.");
+
+    turbojetTemplate = engineTransform.GetComponent<Turbojet>();
+    if (turbojetTemplate == null)
     {
-      Debug.LogWarning((object) "[JetEngineTemplateHelper] Turbojet not found on engine_R.");
+      Debug.LogWarning($"[JetEngineTemplateHelper] No Turbojet component found on '{engineTransform.name}'.");
       return false;
     }
-    Transform transform2 = transform1.Find("nozzle_R");
-    if ((transform2 == null))
+    Debug.Log($"[JetEngineTemplateHelper] Found Turbojet template on '{engineTransform.name}' (maxThrust={turbojetTemplate.maxThrust}, maxRPM={turbojetTemplate.maxRPM}).");
+
+    Debug.Log($"[JetEngineTemplateHelper] Looking for template nozzle at '{nozzlePath}' under '{engineTransform.name}'.");
+    Transform nozzleTransform = engineTransform.Find(nozzlePath);
+    if (nozzleTransform == null)
     {
-      Debug.LogWarning((object) "[JetEngineTemplateHelper] nozzle_R not found under engine_R.");
+      Debug.LogWarning($"[JetEngineTemplateHelper] Nozzle path not found: '{nozzlePath}' (searched under '{engineTransform.name}').");
+      turbojetTemplate = null;
       return false;
     }
-    nozzleTemplate = ((Component) transform2).GetComponent<JetNozzle>();
-    if (!(nozzleTemplate == null))
-      return true;
-    Debug.LogWarning((object) "[JetEngineTemplateHelper] JetNozzle not found on nozzle_R.");
-    return false;
+    Debug.Log($"[JetEngineTemplateHelper] Found nozzle transform '{nozzleTransform.name}'.");
+
+    nozzleTemplate = nozzleTransform.GetComponent<JetNozzle>();
+    if (nozzleTemplate == null)
+    {
+      Debug.LogWarning($"[JetEngineTemplateHelper] No JetNozzle component found on '{nozzleTransform.name}'.");
+      turbojetTemplate = null;
+      return false;
+    }
+
+    Debug.Log($"[JetEngineTemplateHelper] Successfully collected templates from '{root.name}': Turbojet='{turbojetTemplate.name}', JetNozzle='{nozzleTemplate.name}'.");
+    return true;
   }
 }
-
