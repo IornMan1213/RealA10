@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+// Decompiled with JetBrains decompiler
 // Type: RealA10.PlanePrefabModifier
 // Assembly: RealA10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 532C87AC-4BC4-4B3D-ACF1-A050F52D51FF
@@ -13,7 +13,7 @@ public static class PlanePrefabModifier
 {
   public static void ModifyPlanePrefab(GameObject root)
   {
-    if (Object.op_Equality((Object) root, (Object) null))
+    if ((root == null))
     {
       Debug.LogWarning((object) "[PlanePrefabModifier] Root GameObject is null.");
     }
@@ -29,7 +29,7 @@ public static class PlanePrefabModifier
       foreach (string str in strArray1)
       {
         Transform transform = root.transform.Find(str);
-        if (Object.op_Inequality((Object) transform, (Object) null))
+        if ((transform != null))
         {
           ((Component) transform).gameObject.SetActive(false);
           Debug.Log((object) ("[PlanePrefabModifier] Disabled prop: " + str));
@@ -45,14 +45,14 @@ public static class PlanePrefabModifier
       foreach (string str in strArray2)
       {
         Transform transform = root.transform.Find(str);
-        if (Object.op_Equality((Object) transform, (Object) null))
+        if ((transform == null))
         {
           Debug.LogWarning((object) ("[PlanePrefabModifier] Engine path not found: " + str));
         }
         else
         {
           TurbineEngine component = ((Component) transform).GetComponent<TurbineEngine>();
-          if (Object.op_Inequality((Object) component, (Object) null))
+          if ((component != null))
           {
             Object.Destroy((Object) component);
             Debug.Log((object) ("[PlanePrefabModifier] Removed TurbineEngine from: " + str));
@@ -64,3 +64,4 @@ public static class PlanePrefabModifier
     }
   }
 }
+

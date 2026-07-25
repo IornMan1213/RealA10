@@ -1,0 +1,9 @@
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.csproj.AssemblyReference.cache
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.csproj.CoreCompileInputs.cache
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.sourcelink.json
+C:\Users\jayea\Downloads\test\RealA10\bin\Debug\netstandard2.1\RealA10.deps.json
+C:\Users\jayea\Downloads\test\RealA10\bin\Debug\netstandard2.1\RealA10.dll
+C:\Users\jayea\Downloads\test\RealA10\bin\Debug\netstandard2.1\RealA10.pdb
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.dll
+C:\Users\jayea\Downloads\test\RealA10\obj\Debug\netstandard2.1\RealA10.pdb

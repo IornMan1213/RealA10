@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "wU3iWOib3Ws=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jayea\\Downloads\\test\\RealA10\\RealA10.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jayea\\.nuget\\packages\\krafs.publicizer\\2.2.1\\krafs.publicizer.2.2.1.nupkg.sha512"
+  ],
+  "logs": []
+}

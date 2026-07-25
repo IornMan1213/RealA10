@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 
@@ -11,3 +11,4 @@ using System.Security.Permissions;
 [assembly: AssemblyTitle("RealA10_Test")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+

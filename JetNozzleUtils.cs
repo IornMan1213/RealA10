@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+// Decompiled with JetBrains decompiler
 // Type: RealA10.JetNozzleUtils
 // Assembly: RealA10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 532C87AC-4BC4-4B3D-ACF1-A050F52D51FF
@@ -13,14 +13,14 @@ public static class JetNozzleUtils
 {
   public static void InitializeFromTemplate(JetNozzle template, JetNozzle target)
   {
-    if (Object.op_Equality((Object) template, (Object) null) || Object.op_Equality((Object) target, (Object) null))
+    if ((template == null) || (target == null))
     {
       Debug.LogWarning((object) "[JetNozzleUtils] Template or target is null.");
     }
     else
     {
       target.part = (UnitPart) ((Component) target).GetComponent<AeroPart>();
-      if (Object.op_Equality((Object) target.part, (Object) null))
+      if ((target.part == null))
         Debug.LogWarning((object) ("[JetNozzleUtils] AeroPart not found on " + ((Object) ((Component) target).gameObject).name));
       target.turbojet = (Turbojet) null;
       target.failureEffect = template.failureEffect;
@@ -49,7 +49,7 @@ public static class JetNozzleUtils
 
   private static AudioSource CreateAudioSourceFromTemplate(AudioSource template, Transform parent)
   {
-    if (Object.op_Equality((Object) template, (Object) null) || Object.op_Equality((Object) parent, (Object) null))
+    if ((template == null) || (parent == null))
       return (AudioSource) null;
     AudioSource sourceFromTemplate = ((Component) parent).gameObject.AddComponent<AudioSource>();
     sourceFromTemplate.clip = template.clip;
@@ -72,3 +72,4 @@ public static class JetNozzleUtils
     return sourceFromTemplate;
   }
 }
+

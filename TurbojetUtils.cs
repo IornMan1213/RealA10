@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+// Decompiled with JetBrains decompiler
 // Type: RealA10.TurbojetUtils
 // Assembly: RealA10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 532C87AC-4BC4-4B3D-ACF1-A050F52D51FF
@@ -13,7 +13,7 @@ public static class TurbojetUtils
 {
   public static void InitializeFromTemplate(Turbojet template, Turbojet target)
   {
-    if (Object.op_Equality((Object) template, (Object) null) || Object.op_Equality((Object) target, (Object) null))
+    if ((template == null) || (target == null))
     {
       Debug.LogWarning((object) "[TurbojetUtils] Template or target is null.");
     }
@@ -41,7 +41,7 @@ public static class TurbojetUtils
       target.fuelConsumptionMax = template.fuelConsumptionMax;
       target.damageThreshold = template.damageThreshold;
       AeroPart component = ((Component) target).GetComponent<AeroPart>();
-      if (Object.op_Inequality((Object) component, (Object) null))
+      if ((component != null))
       {
         target.criticalParts = new UnitPart[1]
         {
@@ -60,7 +60,7 @@ public static class TurbojetUtils
 
   private static AudioSource CreateAudioSourceFromTemplate(AudioSource template, Transform parent)
   {
-    if (Object.op_Equality((Object) template, (Object) null) || Object.op_Equality((Object) parent, (Object) null))
+    if ((template == null) || (parent == null))
       return (AudioSource) null;
     AudioSource sourceFromTemplate = ((Component) parent).gameObject.AddComponent<AudioSource>();
     sourceFromTemplate.clip = template.clip;
@@ -83,3 +83,4 @@ public static class TurbojetUtils
     return sourceFromTemplate;
   }
 }
+

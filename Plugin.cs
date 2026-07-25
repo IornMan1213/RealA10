@@ -20,7 +20,7 @@ public class Plugin : BaseUnityPlugin
 
   private void Awake()
   {
-    Plugin.Logger = this.Logger;
+    Plugin.Logger = base.Logger;
     Plugin.Logger.LogInfo((object) "Plugin RealA10 is loaded!");
   }
 
@@ -28,7 +28,7 @@ public class Plugin : BaseUnityPlugin
   {
     if (this.done)
       return;
-    if (Object.op_Equality((Object) Encyclopedia.i, (Object) null))
+    if ((Encyclopedia.i == null))
     {
       Plugin.Logger.LogInfo((object) "Waiting for target prefabs to load...");
     }
@@ -45,3 +45,4 @@ public class Plugin : BaseUnityPlugin
     }
   }
 }
+

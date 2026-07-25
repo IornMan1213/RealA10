@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: RealA10.JetEngineAssembler
-// Assembly: RealA10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 532C87AC-4BC4-4B3D-ACF1-A050F52D51FF
-// Assembly location: C:\Program Files (x86)\Steam\steamapps\common\Nuclear Option\BepInEx\plugins\RealA10.dll
-
-using UnityEngine;
+﻿using UnityEngine;
 
 #nullable disable
 namespace RealA10;
@@ -16,63 +10,110 @@ public static class JetEngineAssembler
     Turbojet turbojetTemplate,
     JetNozzle nozzleTemplate)
   {
-    if (Object.op_Equality((Object) root, (Object) null))
+    if (root == null)
     {
-      Debug.LogWarning((object) "[JetEngineAssembler] Root is null.");
+      Debug.LogWarning("[JetEngineAssembler] AssembleJetEngines called with null root.");
+      return;
     }
-    else
-    {
-      JetEngineAssembler.AssembleSingleEngine(root, "wing1_L/engineMount_L/engine_L", "wing1_L/engineMount_L/engine_L/hub_L", turbojetTemplate, nozzleTemplate);
-      JetEngineAssembler.AssembleSingleEngine(root, "wing1_R/engineMount_R/engine_R", "wing1_R/engineMount_R/engine_R/hub_R", turbojetTemplate, nozzleTemplate);
-    }
+
+    Debug.Log($"[JetEngineAssembler] Assembling jet engines on '{root.name}' " +
+               $"using turbojetTemplate='{(turbojetTemplate != null ? turbojetTemplate.name : "NULL")}', " +
+               $"nozzleTemplate='{(nozzleTemplate != null ? nozzleTemplate.name : "NULL")}'");
+
+    AssembleSingleEngine(root, "wing1_L/engineMount_L/engine_L", "wing1_L/engineMount_L/engine_L/hub_L", turbojetTemplate, nozzleTemplate);
+    AssembleSingleEngine(root, "wing1_R/engineMount_R/engine_R", "wing1_R/engineMount_R/engine_R/hub_R", turbojetTemplate, nozzleTemplate);
+
+    Debug.Log($"[JetEngineAssembler] Finished assembling jet engines on '{root.name}'.");
   }
 
   private static void AssembleSingleEngine(
     GameObject root,
     string enginePath,
-    
     string nozzlePath,
     Turbojet turbojetTemplate,
-    JetNozzle nozzleTemplate
-
-  
-    )
+    JetNozzle nozzleTemplate)
   {
-    Transform transform1 = root.transform.Find(enginePath);
-    if (Object.op_Equality((Object) transform1, (Object) null))
+    Debug.Log($"[JetEngineAssembler] Looking for engine transform at '{enginePath}' under '{root.name}'.");
+
+    Transform engineTransform = root.transform.Find(enginePath);
+    if (engineTransform == null)
     {
-      Debug.LogWarning((object) ("[JetEngineAssembler] Engine path not found: " + enginePath));
+      Debug.LogWarning($"[JetEngineAssembler] Engine path not found: '{enginePath}' (searched under '{root.name}').");
+      return;
     }
-    else
+    Debug.Log($"[JetEngineAssembler] Found engine transform '{engineTransform.name}' at '{enginePath}'.");
+
+    Turbojet newTurbojet = engineTransform.gameObject.AddComponent<Turbojet>();
+    Debug.Log($"[JetEngineAssembler] Added Turbojet component to '{engineTransform.name}'. Initializing from template '{(turbojetTemplate != null ? turbojetTemplate.name : "NULL")}'.");
+    TurbojetUtils.InitializeFromTemplate(turbojetTemplate, newTurbojet);
+
+    Debug.Log($"[JetEngineAssembler] Looking for nozzle transform at '{nozzlePath}' under '{root.name}'.");
+    Transform nozzleTransform = root.transform.Find(nozzlePath);
+    if (nozzleTransform == null)
     {
-      Turbojet target1 = ((Component) transform1).gameObject.AddComponent<Turbojet>();
-      TurbojetUtils.InitializeFromTemplate(turbojetTemplate, target1);
-      Transform transform2 = root.transform.Find(nozzlePath);
-      if (Object.op_Equality((Object) transform2, (Object) null))
-      {
-        Debug.LogWarning((object) ("[JetEngineAssembler] Nozzle path not found: " + nozzlePath));
-      }
-      else
-      {
-        JetNozzle target2 = ((Component) transform2).gameObject.AddComponent<JetNozzle>();
-        JetNozzleUtils.InitializeFromTemplate(nozzleTemplate, target2);
-        target1.nozzles = new JetNozzle[1]{ target2 };
-        target2.turbojet = target1;
-        Debug.Log((object) $"[JetEngineAssembler] Jet engine assembled at {((Object) transform1).name} -> {((Object) transform2).name}");
-      }
+      Debug.LogWarning($"[JetEngineAssembler] Nozzle path not found: '{nozzlePath}' (searched under '{root.name}'). Turbojet was added but has no nozzle linked.");
+      return;
     }
+    Debug.Log($"[JetEngineAssembler] Found nozzle transform '{nozzleTransform.name}' at '{nozzlePath}'.");
+
+    JetNozzle newNozzle = nozzleTransform.gameObject.AddComponent<JetNozzle>();
+    Debug.Log($"[JetEngineAssembler] Added JetNozzle component to '{nozzleTransform.name}'. Initializing from template '{(nozzleTemplate != null ? nozzleTemplate.name : "NULL")}'.");
+    JetNozzleUtils.InitializeFromTemplate(nozzleTemplate, newNozzle);
+
+    newTurbojet.nozzles = new JetNozzle[1] { newNozzle };
+    newNozzle.turbojet = newTurbojet;
+
+    Debug.Log($"[JetEngineAssembler] Jet engine assembled: '{engineTransform.name}' -> '{nozzleTransform.name}' (linked Turbojet<->JetNozzle).");
   }
-}
 
-
-public class Plugin : BaseUnityPlugin
-{
-  internal static ManualLogSource Logger;
-  public bool done;
-
-  private void Awake()
+  /// <summary>
+  /// Copies a Turbojet/JetNozzle setup from a source plane's existing engine onto
+  /// a different target plane, using the source's live component values as the template.
+  /// Useful for swapping one plane's engine config onto another plane.
+  /// </summary>
+  public static void TransferJetEngine(
+    GameObject sourcePlane,
+    GameObject targetPlane,
+    string sourceEnginePath,
+    string sourceNozzlePath,
+    string targetEnginePath,
+    string targetNozzlePath)
   {
-    Plugin.Logger = this.Logger;
-    Plugin.Logger.LogInfo((AssembleJetEngines) (enginePath, nozzlePath, turbojetTemplate, nozzleTemplate));
+    if (sourcePlane == null || targetPlane == null)
+    {
+      Debug.LogWarning($"[JetEngineAssembler] TransferJetEngine called with null plane(s). sourcePlane={(sourcePlane != null ? sourcePlane.name : "NULL")}, targetPlane={(targetPlane != null ? targetPlane.name : "NULL")}");
+      return;
+    }
+
+    Debug.Log($"[JetEngineAssembler] Transferring engine from '{sourcePlane.name}' ({sourceEnginePath}) to '{targetPlane.name}' ({targetEnginePath}).");
+
+    Transform sourceEngineTransform = sourcePlane.transform.Find(sourceEnginePath);
+    if (sourceEngineTransform == null)
+    {
+      Debug.LogWarning($"[JetEngineAssembler] Source engine path not found: '{sourceEnginePath}' on '{sourcePlane.name}'.");
+      return;
+    }
+
+    Turbojet sourceTurbojet = sourceEngineTransform.GetComponent<Turbojet>();
+    if (sourceTurbojet == null)
+    {
+      Debug.LogWarning($"[JetEngineAssembler] No Turbojet component found on source transform '{sourceEngineTransform.name}'.");
+      return;
+    }
+    Debug.Log($"[JetEngineAssembler] Found source Turbojet on '{sourceEngineTransform.name}'.");
+
+    Transform sourceNozzleTransform = sourcePlane.transform.Find(sourceNozzlePath);
+    JetNozzle sourceNozzle = sourceNozzleTransform != null ? sourceNozzleTransform.GetComponent<JetNozzle>() : null;
+    if (sourceNozzle == null)
+    {
+      Debug.LogWarning($"[JetEngineAssembler] No JetNozzle component found at source path '{sourceNozzlePath}' on '{sourcePlane.name}'.");
+      return;
+    }
+    Debug.Log($"[JetEngineAssembler] Found source JetNozzle on '{sourceNozzleTransform.name}'.");
+
+    Debug.Log($"[JetEngineAssembler] Applying source engine config to target '{targetPlane.name}'.");
+    AssembleSingleEngine(targetPlane, targetEnginePath, targetNozzlePath, sourceTurbojet, sourceNozzle);
+
+    Debug.Log($"[JetEngineAssembler] Transfer complete: '{sourcePlane.name}' engine -> '{targetPlane.name}'.");
   }
 }
