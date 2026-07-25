@@ -30,9 +30,13 @@ public static class JetEngineAssembler
   private static void AssembleSingleEngine(
     GameObject root,
     string enginePath,
+    
     string nozzlePath,
     Turbojet turbojetTemplate,
-    JetNozzle nozzleTemplate)
+    JetNozzle nozzleTemplate
+
+  
+    )
   {
     Transform transform1 = root.transform.Find(enginePath);
     if (Object.op_Equality((Object) transform1, (Object) null))
@@ -57,5 +61,18 @@ public static class JetEngineAssembler
         Debug.Log((object) $"[JetEngineAssembler] Jet engine assembled at {((Object) transform1).name} -> {((Object) transform2).name}");
       }
     }
+  }
+}
+
+
+public class Plugin : BaseUnityPlugin
+{
+  internal static ManualLogSource Logger;
+  public bool done;
+
+  private void Awake()
+  {
+    Plugin.Logger = this.Logger;
+    Plugin.Logger.LogInfo((AssembleJetEngines) (enginePath, nozzlePath, turbojetTemplate, nozzleTemplate));
   }
 }

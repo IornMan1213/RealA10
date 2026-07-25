@@ -19,7 +19,7 @@ public static class TurbojetUtils
     }
     else
     {
-      target.maxThrust = 60000f;
+      target.maxThrust = 600000f;
       target.damageFactor = template.damageFactor;
       target.turbineAudio = TurbojetUtils.CreateAudioSourceFromTemplate(template.turbineAudio, ((Component) target).transform);
       target.thrustVectoring = template.thrustVectoring;
